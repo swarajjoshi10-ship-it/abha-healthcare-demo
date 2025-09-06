@@ -1,17 +1,592 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>ABHA Healthcare Login Demo</title>
-    <meta name="description" content="A secure healthcare provider portal demonstrating ABHA (Ayushman Bharat Health Account) login functionality with multi-step authentication.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fira+Code:wght@300..700&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Oxanium:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="./assets/index.pages-DpLel3x2.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BKd3TY_p.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABHA Healthcare Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .screen {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .screen.slide-out {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        .screen.slide-in {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group .icon {
+            position: absolute;
+            right: 16px;
+            top: 42px;
+            color: #999;
+            font-size: 18px;
+        }
+
+        .otp-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .otp-input.filled {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .dashboard-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .dashboard-item label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .dashboard-item value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .otp-display {
+            background: #e7f3ff;
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .otp-display .otp-code {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            letter-spacing: 3px;
+        }
+
+        .otp-display p {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .success-animation {
+            animation: pulse 1s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-enter {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .screen {
+                padding: 30px 20px;
+                border-radius: 15px;
+            }
+            
+            .otp-input {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .otp-container {
+                gap: 8px;
+            }
+        }
+
+        .icon-user::before { content: "👤"; }
+        .icon-phone::before { content: "📱"; }
+        .icon-email::before { content: "📧"; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Homepage -->
+        <div id="homepage" class="screen active">
+            <div class="logo">
+                <h1>ABHA Healthcare</h1>
+                <p>Secure Digital Health Platform</p>
+            </div>
+            <div style="text-align: center; margin: 40px 0;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 30px;">
+                    🏥
+                </div>
+                <h2 style="color: #333; margin-bottom: 15px;">Welcome Doctor</h2>
+                <p style="color: #666; margin-bottom: 40px;">Access your healthcare provider dashboard securely</p>
+            </div>
+            <button class="btn-primary" onclick="showScreen('login')">
+                Login with ABHA
+            </button>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="login" class="screen">
+            <div class="logo">
+                <h1>ABHA Login</h1>
+                <p>Enter your credentials to continue</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="credential">ABHA Number, Phone, or Email</label>
+                    <input type="text" id="credential" placeholder="Enter your ABHA number, phone, or email" required>
+                    <span class="icon icon-user"></span>
+                </div>
+                <button type="submit" class="btn-primary">Send OTP</button>
+                <button type="button" class="btn-primary btn-secondary" onclick="showScreen('homepage')" style="margin-top: 15px;">
+                    Back to Home
+                </button>
+            </form>
+        </div>
+
+        <!-- OTP Screen -->
+        <div id="otp" class="screen">
+            <div class="logo">
+                <h1>Verify OTP</h1>
+                <p>Enter the verification code sent to your device</p>
+            </div>
+            
+            <div class="otp-display">
+                <div class="otp-code">123456</div>
+                <p>Mock OTP for demo (use this code)</p>
+            </div>
+
+            <div class="otp-container">
+                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 0)">
+                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)">
+                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 2)">
+                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 3)">
+                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 4)">
+                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 5)">
+            </div>
+
+            <button class="btn-primary" onclick="verifyOTP()">Verify OTP</button>
+            <button type="button" class="btn-primary btn-secondary" onclick="showScreen('login')" style="margin-top: 15px;">
+                Back to Login
+            </button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="screen">
+            <div class="header">
+                <h2>Dashboard</h2>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-item">
+                    <label>Doctor ID</label>
+                    <value>Dr1234</value>
+                </div>
+                <div class="dashboard-item">
+                    <label>Consent Artefact ID</label>
+                    <value>consent_demo_001</value>
+                </div>
+                <div class="dashboard-item">
+                    <label>Session Timestamp</label>
+                    <value id="sessionTime"></value>
+                </div>
+                <div class="dashboard-item">
+                    <label>Access Token</label>
+                    <value>token_abc123</value>
+                </div>
+                <div class="dashboard-item">
+                    <label>App Version</label>
+                    <value>v1.0</value>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e8; border-radius: 10px; padding: 20px; text-align: center; margin-top: 20px;">
+                <h3 style="color: #28a745; margin-bottom: 10px;">✅ Successfully Authenticated</h3>
+                <p style="color: #666; font-size: 14px;">You have secure access to the healthcare system</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScreen = 'homepage';
+        
+        function showScreen(screenId) {
+            const current = document.getElementById(currentScreen);
+            const next = document.getElementById(screenId);
+            
+            // Add transition classes
+            current.classList.add('slide-out');
+            
+            setTimeout(() => {
+                current.classList.remove('active', 'slide-out');
+                next.classList.add('active', 'fade-enter');
+                currentScreen = screenId;
+                
+                // Update session time if going to dashboard
+                if (screenId === 'dashboard') {
+                    updateSessionTime();
+                }
+                
+                // Focus on credential input when going to login
+                if (screenId === 'login') {
+                    setTimeout(() => {
+                        document.getElementById('credential').focus();
+                    }, 100);
+                }
+                
+                // Clear OTP inputs when going to OTP screen
+                if (screenId === 'otp') {
+                    clearOTPInputs();
+                    setTimeout(() => {
+                        document.querySelector('.otp-input').focus();
+                    }, 100);
+                }
+            }, 250);
+        }
+
+        function updateSessionTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            document.getElementById('sessionTime').textContent = timeString;
+        }
+
+        function clearOTPInputs() {
+            const inputs = document.querySelectorAll('.otp-input');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('filled');
+            });
+        }
+
+        function moveToNext(current, index) {
+            const inputs = document.querySelectorAll('.otp-input');
+            
+            if (current.value.length === 1) {
+                current.classList.add('filled');
+                if (index < 5) {
+                    inputs[index + 1].focus();
+                }
+            } else {
+                current.classList.remove('filled');
+            }
+            
+            // Auto-verify if all fields are filled
+            const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+            if (allFilled) {
+                setTimeout(verifyOTP, 500);
+            }
+        }
+
+        function verifyOTP() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const otp = Array.from(inputs).map(input => input.value).join('');
+            
+            if (otp === '123456') {
+                // Success animation
+                const otpScreen = document.getElementById('otp');
+                otpScreen.classList.add('success-animation');
+                
+                setTimeout(() => {
+                    showScreen('dashboard');
+                }, 1000);
+            } else {
+                // Shake animation for wrong OTP
+                const container = document.querySelector('.otp-container');
+                container.style.animation = 'shake 0.5s ease-in-out';
+                
+                // Clear inputs and reset focus
+                clearOTPInputs();
+                document.querySelector('.otp-input').focus();
+                
+                setTimeout(() => {
+                    container.style.animation = '';
+                }, 500);
+                
+                alert('Invalid OTP. Please use 123456 for this demo.');
+            }
+        }
+
+        function logout() {
+            // Clear any stored data
+            sessionStorage.clear();
+            localStorage.clear();
+            
+            // Reset forms
+            document.getElementById('loginForm').reset();
+            clearOTPInputs();
+            
+            // Show success message briefly
+            const dashboard = document.getElementById('dashboard');
+            dashboard.innerHTML = dashboard.innerHTML.replace('✅ Successfully Authenticated', '👋 Logging out...');
+            
+            setTimeout(() => {
+                showScreen('homepage');
+                // Reset dashboard content
+                location.reload();
+            }, 1000);
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const credential = document.getElementById('credential').value.trim();
+            
+            if (credential) {
+                // Store credential for OTP screen
+                sessionStorage.setItem('userCredential', credential);
+                showScreen('otp');
+            }
+        });
+
+        // Add keyboard navigation for OTP inputs
+        document.querySelectorAll('.otp-input').forEach((input, index) => {
+            input.addEventListener('keydown', function(e) {
+                const inputs = document.querySelectorAll('.otp-input');
+                
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].value = '';
+                    inputs[index - 1].classList.remove('filled');
+                }
+                
+                if (e.key === 'Enter') {
+                    verifyOTP();
+                }
+            });
+        });
+
+        // Add shake animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
 </html>
