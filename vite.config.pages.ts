@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   root: path.resolve(import.meta.dirname, "client"),
-  base: "/", // This will be updated to your repo name for GitHub Pages
+  base: "./", // Use relative paths for GitHub Pages
   build: {
     outDir: path.resolve(import.meta.dirname, "docs"),
     emptyOutDir: true,
