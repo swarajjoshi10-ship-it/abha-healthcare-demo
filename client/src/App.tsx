@@ -20,6 +20,22 @@ function Router() {
   useEffect(() => {
     const currentSession = SessionManager.getSession();
     setSession(currentSession);
+    
+    // Listen for storage changes to update session state
+    const handleStorageChange = () => {
+      const updatedSession = SessionManager.getSession();
+      setSession(updatedSession);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check for session changes periodically
+    const interval = setInterval(handleStorageChange, 1000);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
 
   const handleLogout = () => {
