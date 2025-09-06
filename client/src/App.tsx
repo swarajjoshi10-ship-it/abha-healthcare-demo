@@ -14,11 +14,8 @@ import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const [session, setSession] = useState<SessionData | null>(null);
-  
-  // Debug: log current location
-  console.log('Current location:', location);
 
   useEffect(() => {
     const currentSession = SessionManager.getSession();
@@ -53,17 +50,11 @@ function Router() {
       
       <main className="flex-1 flex items-center justify-center p-4">
         <Switch>
-          <Route path="/" component={() => {
-            console.log('Home route matched');
-            return <Home />;
-          }} />
+          <Route path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/otp" component={OTPVerification} />
           <Route path="/dashboard" component={Dashboard} />
-          <Route component={() => {
-            console.log('NotFound route matched, location:', location);
-            return <NotFound />;
-          }} />
+          <Route component={NotFound} />
         </Switch>
       </main>
       
