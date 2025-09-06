@@ -20,11 +20,11 @@ export default defineConfig({
     sourcemap: false,
     minify: true,
     rollupOptions: {
-      input: {
-        main: path.resolve(import.meta.dirname, "client", "index.pages.html"),
-      },
+      input: path.resolve(import.meta.dirname, "client", "index.pages.html"),
       output: {
         manualChunks: undefined,
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       },
     },
   },

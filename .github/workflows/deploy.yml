@@ -31,7 +31,9 @@ jobs:
         run: npm ci
 
       - name: Build for GitHub Pages
-        run: npm run build:pages
+        run: |
+          npx vite build --config vite.config.pages.ts
+          mv docs/index.pages.html docs/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
