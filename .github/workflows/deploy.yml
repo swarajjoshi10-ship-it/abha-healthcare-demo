@@ -34,6 +34,7 @@ jobs:
         run: |
           npx vite build --config vite.config.pages.ts
           mv docs/index.pages.html docs/index.html
+          cp docs/index.html docs/404.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
