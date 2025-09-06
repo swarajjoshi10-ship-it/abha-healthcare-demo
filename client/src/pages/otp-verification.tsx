@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Mail, Info, Loader2 } from "lucide-react";
+import { ArrowLeft, Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link, useLocation } from "wouter";
 import { otpSchema, type OTPForm } from "@shared/schema";
 import { AuthService } from "@/lib/auth";
@@ -90,21 +89,7 @@ export default function OTPVerification() {
       </div>
       
       <Card>
-        <CardContent className="pt-6 space-y-4">
-          <Alert>
-            <Info className="w-4 h-4" />
-            <AlertDescription>
-              <div className="flex items-start space-x-3">
-                <div>
-                  <p className="text-sm font-medium">Demo OTP Generated</p>
-                  <p className="text-sm text-muted-foreground">
-                    Use this OTP for testing: <span className="font-mono font-semibold text-foreground">123456</span>
-                  </p>
-                </div>
-              </div>
-            </AlertDescription>
-          </Alert>
-          
+        <CardContent className="pt-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
